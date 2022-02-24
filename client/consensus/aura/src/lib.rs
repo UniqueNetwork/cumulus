@@ -36,7 +36,7 @@ use sc_telemetry::TelemetryHandle;
 use sp_api::ProvideRuntimeApi;
 use sp_application_crypto::AppPublic;
 use sp_blockchain::HeaderBackend;
-use sp_consensus::{EnableProofRecording, Environment, ProofRecording, Proposer, SyncOracle};
+use sp_consensus::{EnableProofRecording, Environment, ProofRecording, Proposer, SyncOracle, SlotData};
 use sp_consensus_aura::{AuraApi, SlotDuration};
 use sp_core::crypto::Pair;
 use sp_inherents::{CreateInherentDataProviders, InherentData, InherentDataProvider};
@@ -197,7 +197,7 @@ where
 			inherent_data_providers.slot(),
 			inherent_data_providers.timestamp(),
 			inherent_data,
-			self.slot_duration.as_duration(),
+			self.slot_duration.slot_duration(),
 			parent.clone(),
 			// Set the block limit to 50% of the maximum PoV size.
 			//

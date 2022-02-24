@@ -46,7 +46,7 @@ use sc_network::NetworkService;
 use sc_service::{Configuration, PartialComponents, Role, TFullBackend, TFullClient, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryHandle, TelemetryWorker, TelemetryWorkerHandle};
 use sp_api::{ApiExt, ConstructRuntimeApi};
-use sp_consensus::CacheKeyId;
+use sp_consensus::{CacheKeyId, SlotData};
 use sp_consensus_aura::AuraApi;
 use sp_core::crypto::Pair;
 use sp_keystore::SyncCryptoStorePtr;
@@ -686,9 +686,9 @@ pub fn rococo_parachain_build_import_queue(
 			let timestamp = sp_timestamp::InherentDataProvider::from_system_time();
 
 			let slot =
-				sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_slot_duration(
+				sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_duration(
 					*timestamp,
-					slot_duration,
+					slot_duration.slot_duration(),
 				);
 
 			Ok((timestamp, slot))
@@ -767,9 +767,9 @@ pub async fn start_rococo_parachain_node(
 						let timestamp = sp_timestamp::InherentDataProvider::from_system_time();
 
 						let slot =
-							sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_slot_duration(
+							sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_duration(
 								*timestamp,
-								slot_duration,
+								slot_duration.slot_duration(),
 							);
 
 						let parachain_inherent = parachain_inherent.ok_or_else(|| {
@@ -787,7 +787,7 @@ pub async fn start_rococo_parachain_node(
 				sync_oracle,
 				keystore,
 				force_authoring,
-				slot_duration,
+				slot_duration: *slot_duration,
 				// We got around 500ms for proposing
 				block_proposal_slot_portion: SlotProportion::new(1f32 / 24f32),
 				// And a maximum of 750ms if slots are skipped
@@ -1070,9 +1070,9 @@ where
 						let timestamp = sp_timestamp::InherentDataProvider::from_system_time();
 
 						let slot =
-							sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_slot_duration(
+							sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_duration(
 								*timestamp,
-								slot_duration,
+								slot_duration.slot_duration(),
 							);
 
 						Ok((timestamp, slot))
@@ -1191,9 +1191,9 @@ where
 										sp_timestamp::InherentDataProvider::from_system_time();
 
 									let slot =
-										sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_slot_duration(
+										sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_duration(
 											*timestamp,
-											slot_duration,
+											slot_duration.slot_duration(),
 										);
 
 									let parachain_inherent =
@@ -1212,7 +1212,7 @@ where
 						sync_oracle,
 						keystore,
 						force_authoring,
-						slot_duration,
+						slot_duration: *slot_duration,
 						// We got around 500ms for proposing
 						block_proposal_slot_portion: SlotProportion::new(1f32 / 24f32),
 						// And a maximum of 750ms if slots are skipped
@@ -1502,9 +1502,9 @@ pub fn canvas_kusama_build_import_queue(
 			let timestamp = sp_timestamp::InherentDataProvider::from_system_time();
 
 			let slot =
-				sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_slot_duration(
+				sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_duration(
 					*timestamp,
-					slot_duration,
+					slot_duration.slot_duration(),
 				);
 
 			Ok((timestamp, slot))
@@ -1580,9 +1580,9 @@ pub async fn start_canvas_kusama_node(
 							let timestamp = sp_timestamp::InherentDataProvider::from_system_time();
 
 							let slot =
-								sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_slot_duration(
+								sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_duration(
 									*timestamp,
-									slot_duration,
+									slot_duration.slot_duration(),
 								);
 
 							let parachain_inherent = parachain_inherent.ok_or_else(|| {
@@ -1600,7 +1600,7 @@ pub async fn start_canvas_kusama_node(
 					sync_oracle,
 					keystore,
 					force_authoring,
-					slot_duration,
+					slot_duration: *slot_duration,
 					// We got around 500ms for proposing
 					block_proposal_slot_portion: SlotProportion::new(1f32 / 24f32),
 					// And a maximum of 750ms if slots are skipped
